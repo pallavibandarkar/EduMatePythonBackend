@@ -5,6 +5,9 @@ import tempfile
 from google import genai
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Tuple, TypedDict, Union
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class PaperCheckResult(BaseModel):
     Name: str = Field("", description="Paper taker's name or anything that hels identify the paper taker")
@@ -49,7 +52,7 @@ def prepare_document(file_path: str) -> Dict[str, Any]:
     """
     try:
         # Initialize the Google AI client
-        client = genai.Client(api_key="AIzaSyD4lR1WQ1yaZumSFtMVTG_0Y8d0oRy1XhA")
+        client = genai.Client(api_key=os.environ.get('API_KEY'))
         
         # Upload the file
         uploaded_file = client.files.upload(file=file_path)
@@ -87,7 +90,7 @@ def analyze_document(initial_result: Dict[str, Any]) -> Dict[str, Any]:
         if not initial_result["success"]:
             return initial_result
             
-        client = genai.Client(api_key="AIzaSyD4lR1WQ1yaZumSFtMVTG_0Y8d0oRy1XhA")
+        client = genai.Client(api_key=os.environ.get('API_KEY'))
         
         structure_prompt = f"""
         Convert the following feedback into a structured JSON format:
